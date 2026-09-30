@@ -33,6 +33,98 @@ const LOCALE_LABELS: Record<Locale, string> = {
   ja: '日本語',
 }
 
+
+const PAGE_SEO: Record<string, Record<Locale, [string, string]>> = {
+  home: {
+    en: ['Free Online Image Tools – Compress, Resize & Convert', 'Free online image tools to compress, resize and convert JPG, PNG and WebP images. Fast, private and processed directly in your browser.'],
+    fr: ['Outils image en ligne gratuits – Compresser, redimensionner et convertir', 'Compressez, redimensionnez et convertissez gratuitement vos images JPG, PNG et WebP directement dans votre navigateur.'],
+    es: ['Herramientas de imagen online gratis – Comprimir, redimensionar y convertir', 'Comprime, cambia el tamaño y convierte imágenes JPG, PNG y WebP gratis directamente en tu navegador.'],
+    de: ['Kostenlose Online-Bildtools – Komprimieren, Ändern und Konvertieren', 'Komprimiere, ändere die Größe und konvertiere JPG-, PNG- und WebP-Bilder kostenlos direkt im Browser.'],
+    ar: ['أدوات الصور المجانية عبر الإنترنت – ضغط وتغيير وتحويل الصور', 'اضغط وغيّر حجم وحوّل صور JPG وPNG وWebP مجانًا مباشرة في متصفحك.'],
+    'zh-CN': ['免费在线图片工具 – 压缩、调整大小和转换', '免费在线压缩、调整大小和转换 JPG、PNG 和 WebP 图片，文件直接在浏览器中处理。'],
+    ja: ['無料オンライン画像ツール – 圧縮・サイズ変更・変換', 'JPG、PNG、WebP画像を無料で圧縮、サイズ変更、変換できます。'],
+  },
+
+  resize: {
+    en: ['Resize Image Online Free – Change JPG, PNG & WebP Dimensions', 'Resize JPG, PNG and WebP images online for free. Change image dimensions quickly and privately directly in your browser.'],
+    fr: ['Redimensionner une image en ligne gratuitement – JPG, PNG et WebP', 'Redimensionnez gratuitement vos images JPG, PNG et WebP directement dans votre navigateur.'],
+    es: ['Cambiar tamaño de imagen online gratis – JPG, PNG y WebP', 'Cambia gratis las dimensiones de imágenes JPG, PNG y WebP directamente en tu navegador.'],
+    de: ['Bilder kostenlos online skalieren – JPG, PNG und WebP', 'Ändere die Abmessungen von JPG-, PNG- und WebP-Bildern kostenlos direkt im Browser.'],
+    ar: ['تغيير حجم الصور عبر الإنترنت مجانًا – JPG وPNG وWebP', 'غيّر أبعاد صور JPG وPNG وWebP مجانًا وبسرعة مباشرة في متصفحك.'],
+    'zh-CN': ['免费在线调整图片大小 – JPG、PNG 和 WebP', '免费在线调整 JPG、PNG 和 WebP 图片尺寸。'],
+    ja: ['画像サイズ変更オンライン無料 – JPG、PNG、WebP', 'JPG、PNG、WebP画像のサイズを無料で変更できます。'],
+  },
+
+  compress: {
+    en: ['Compress Image Online Free – Reduce JPG, PNG & WebP Size', 'Compress JPG, PNG and WebP images online for free. Reduce image file size and keep your images private.'],
+    fr: ['Compresser une image en ligne gratuitement – JPG, PNG et WebP', 'Compressez gratuitement vos images JPG, PNG et WebP directement dans votre navigateur.'],
+    es: ['Comprimir imágenes online gratis – JPG, PNG y WebP', 'Comprime gratis imágenes JPG, PNG y WebP directamente en tu navegador.'],
+    de: ['Bilder kostenlos online komprimieren – JPG, PNG und WebP', 'Komprimiere JPG-, PNG- und WebP-Bilder kostenlos direkt im Browser.'],
+    ar: ['ضغط الصور عبر الإنترنت مجانًا – JPG وPNG وWebP', 'اضغط صور JPG وPNG وWebP مجانًا لتقليل حجمها مع الحفاظ على خصوصية ملفاتك.'],
+    'zh-CN': ['免费在线压缩图片 – JPG、PNG 和 WebP', '免费在线压缩 JPG、PNG 和 WebP 图片，减小文件大小并保护隐私。'],
+    ja: ['画像圧縮オンライン無料 – JPG、PNG、WebP', 'JPG、PNG、WebP画像を無料で圧縮できます。'],
+  },
+
+  jpgToPng: {
+    en: ["JPG to PNG Converter Online Free – Convert JPG to PNG", "Convert JPG images to PNG online for free."],
+    fr: ["Convertisseur JPG en PNG gratuit", "Convertissez gratuitement les images JPG en PNG."],
+    es: ["Convertidor JPG a PNG gratis", "Convierte imágenes JPG a PNG gratis."],
+    de: ["JPG in PNG umwandeln – Kostenlos", "Konvertiere JPG-Bilder kostenlos in PNG."],
+    ar: ["تحويل JPG إلى PNG مجانًا", "حوّل صور JPG إلى PNG مجانًا."],
+    "zh-CN": ["JPG 转 PNG 在线免费转换器", "免费将 JPG 图片转换为 PNG。"],
+    ja: ["JPGからPNGへの変換 – 無料", "JPG画像を無料でPNGに変換できます。"],
+  },
+  pngToJpg: {
+    en: ["PNG to JPG Converter Online Free – Convert PNG to JPG", "Convert PNG images to JPG online for free."],
+    fr: ["Convertisseur PNG en JPG gratuit", "Convertissez gratuitement les images PNG en JPG."],
+    es: ["Convertidor PNG a JPG gratis", "Convierte imágenes PNG a JPG gratis."],
+    de: ["PNG in JPG umwandeln – Kostenlos", "Konvertiere PNG-Bilder kostenlos in JPG."],
+    ar: ["تحويل PNG إلى JPG مجانًا", "حوّل صور PNG إلى JPG مجانًا."],
+    "zh-CN": ["PNG 转 JPG 在线免费转换器", "免费将 PNG 图片转换为 JPG。"],
+    ja: ["PNGからJPGへの変換 – 無料", "PNG画像を無料でJPGに変換できます。"],
+  },
+  jpgToWebp: {
+    en: ["JPG to WebP Converter Online Free – Convert JPG to WebP", "Convert JPG images to WebP online for free."],
+    fr: ["Convertisseur JPG en WebP gratuit", "Convertissez gratuitement les images JPG en WebP."],
+    es: ["Convertidor JPG a WebP gratis", "Convierte imágenes JPG a WebP gratis."],
+    de: ["JPG in WebP umwandeln – Kostenlos", "Konvertiere JPG-Bilder kostenlos in WebP."],
+    ar: ["تحويل JPG إلى WebP مجانًا", "حوّل صور JPG إلى WebP مجانًا."],
+    "zh-CN": ["JPG 转 WebP 在线免费转换器", "免费将 JPG 图片转换为 WebP。"],
+    ja: ["JPGからWebPへの変換 – 無料", "JPG画像を無料でWebPに変換できます。"],
+  },
+  pngToWebp: {
+    en: ["PNG to WebP Converter Online Free – Convert PNG to WebP", "Convert PNG images to WebP online for free."],
+    fr: ["Convertisseur PNG en WebP gratuit", "Convertissez gratuitement les images PNG en WebP."],
+    es: ["Convertidor PNG a WebP gratis", "Convierte imágenes PNG a WebP gratis."],
+    de: ["PNG in WebP umwandeln – Kostenlos", "Konvertiere PNG-Bilder kostenlos in WebP."],
+    ar: ["تحويل PNG إلى WebP مجانًا", "حوّل صور PNG إلى WebP مجانًا."],
+    "zh-CN": ["PNG 转 WebP 在线免费转换器", "免费将 PNG 图片转换为 WebP。"],
+    ja: ["PNGからWebPへの変換 – 無料", "PNG画像を無料でWebPに変換できます。"],
+  },
+  webpToJpg: {
+    en: ["WebP to JPG Converter Online Free – Convert WebP to JPG", "Convert WebP images to JPG online for free."],
+    fr: ["Convertisseur WebP en JPG gratuit", "Convertissez gratuitement les images WebP en JPG."],
+    es: ["Convertidor WebP a JPG gratis", "Convierte imágenes WebP a JPG gratis."],
+    de: ["WebP in JPG umwandeln – Kostenlos", "Konvertiere WebP-Bilder kostenlos in JPG."],
+    ar: ["تحويل WebP إلى JPG مجانًا", "حوّل صور WebP إلى JPG مجانًا."],
+    "zh-CN": ["WebP 转 JPG 在线免费转换器", "免费将 WebP 图片转换为 JPG。"],
+    ja: ["WebPからJPGへの変換 – 無料", "WebP画像を無料でJPGに変換できます。"],
+  },
+  imageToPdf: {
+    en: ["Image to PDF Converter Online Free – Convert Images to PDF", "Convert JPG, PNG and WebP images to PDF online for free."],
+    fr: ["Convertisseur image en PDF gratuit", "Convertissez gratuitement les images JPG, PNG et WebP en PDF."],
+    es: ["Convertidor de imagen a PDF gratis", "Convierte imágenes JPG, PNG y WebP a PDF gratis."],
+    de: ["Bild in PDF umwandeln – Kostenlos", "Konvertiere JPG-, PNG- und WebP-Bilder kostenlos in PDF."],
+    ar: ["تحويل الصور إلى PDF مجانًا", "حوّل صور JPG وPNG وWebP إلى PDF مجانًا."],
+    "zh-CN": ["图片转 PDF 在线免费转换器", "免费将 JPG、PNG 和 WebP 图片转换为 PDF。"],
+    ja: ["画像からPDFへの変換 – 無料", "JPG、PNG、WebP画像を無料でPDFに変換できます。"],
+  },
+}
+
+function applyPageSEO(page: string, locale: Locale) {
+  const seo = PAGE_SEO[page][locale]
+  setPageSEO(seo[0], seo[1])
+}
 const CONCURRENCY = 4
 
 let nextId = 0
@@ -52,13 +144,17 @@ function App() {
     }
   }, [])
 
-  const path = window.location.pathname
+  const pathname = window.location.pathname
+  const firstSegment = pathname.split('/')[1] as Locale
+  const hasLocalePrefix = ['en', 'fr', 'es', 'de', 'ar', 'zh-CN', 'ja'].includes(firstSegment)
+  const locale: Locale = hasLocalePrefix ? firstSegment : 'en'
+
+  const path = hasLocalePrefix
+    ? '/' + pathname.split('/').slice(2).join('/')
+    : pathname
 
   if (path === '/') {
-    setPageSEO(
-      'Free Online Image Tools – Compress, Resize & Convert',
-      'Free online image tools to compress, resize and convert JPG, PNG and WebP images. Fast, private and processed directly in your browser.'
-    )
+    applyPageSEO("home", locale)
     return <Home />
   }
 
@@ -67,6 +163,7 @@ function App() {
       'Resize Image Online Free – Change JPG, PNG & WebP Dimensions',
       'Resize JPG, PNG and WebP images online for free. Change image dimensions quickly and privately directly in your browser.'
     )
+    applyPageSEO("resize", locale)
     return <ResizeImage />
   }
 
@@ -75,6 +172,7 @@ function App() {
       'Compress Image Online Free – Reduce JPG, PNG & WebP Size',
       'Compress JPG, PNG and WebP images online for free. Reduce image file size and keep your images private with browser-based image compression.'
     )
+    applyPageSEO("compress", locale)
     return <CompressorApp />
   }
 

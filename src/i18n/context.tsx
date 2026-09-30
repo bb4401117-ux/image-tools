@@ -21,6 +21,12 @@ const SUPPORTED_LOCALES: Locale[] = [
 const STORAGE_KEY = 'imagetools-locale'
 
 function detectLocale(): Locale {
+  const pathLocale = window.location.pathname.split('/')[1] as Locale
+
+  if (SUPPORTED_LOCALES.includes(pathLocale)) {
+    return pathLocale
+  }
+
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved && SUPPORTED_LOCALES.includes(saved as Locale)) {

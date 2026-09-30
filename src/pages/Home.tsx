@@ -81,10 +81,33 @@ const tools: Tool[] = [
 
 export default function Home() {
   const { locale, setLocale, t } = useLocale();
+
+  const localizedPath = (path: string, nextLocale: Locale = locale) => {
+    return `/${nextLocale}${path === '/' ? '' : path}`;
+  };
+
   const openTool = (tool: Tool) => {
     if (!tool.available) return;
 
-    window.history.pushState({}, '', tool.path);
+    window.history.pushState({}, '', localizedPath(tool.path));
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
+  const changeLanguage = (nextLocale: Locale) => {
+    setLocale(nextLocale);
+
+    const pathname = window.location.pathname;
+    const segments = pathname.split('/');
+    const firstSegment = segments[1] as Locale;
+    const hasLocalePrefix = Object.keys(LOCALE_LABELS).includes(firstSegment);
+
+    const currentPath = hasLocalePrefix
+      ? '/' + segments.slice(2).join('/')
+      : pathname;
+
+    const nextPath = localizedPath(currentPath || '/', nextLocale);
+
+    window.history.pushState({}, '', nextPath);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
@@ -95,7 +118,7 @@ export default function Home() {
         <select
           aria-label="Select language"
           value={locale}
-          onChange={(e) => setLocale(e.target.value as Locale)}
+          onChange={(e) => changeLanguage(e.target.value as Locale)}
         >
           {Object.entries(LOCALE_LABELS).map(([key, label]) => (
             <option key={key} value={key}>{label}</option>
