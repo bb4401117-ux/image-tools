@@ -124,8 +124,8 @@ function App() {
 
   if (path === '/png-to-jpg') {
     setPageSEO(
-      'PNG to JPG Converter Online Free',
-      'Convert PNG images to JPG online for free. Fast, private conversion directly in your browser.'
+      'PNG to JPG Converter Online Free – Convert PNG to JPG',
+      'Convert PNG images to JPG online for free. Fast, private and easy conversion directly in your browser.'
     )
     return (
       <ImageConverter
