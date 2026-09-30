@@ -1,56 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
   <url>
     <loc>https://image-tools-6vq.pages.dev/</loc>
   </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/compress-image</loc>
-  </url>
-
   <url>
     <loc>https://image-tools-6vq.pages.dev/resize-image</loc>
   </url>
-
   <url>
-    <loc>https://image-tools-6vq.pages.dev/jpg-to-png</loc>
+    <loc>https://image-tools-6vq.pages.dev/compress-image</loc>
   </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/png-to-jpg</loc>
-  </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/jpg-to-webp</loc>
-  </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/png-to-webp</loc>
-  </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/webp-to-jpg</loc>
-  </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/image-to-pdf</loc>
-  </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/about</loc>
-  </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/privacy</loc>
-  </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/terms</loc>
-  </url>
-
-  <url>
-    <loc>https://image-tools-6vq.pages.dev/contact</loc>
-  </url>
-
 </urlset>
