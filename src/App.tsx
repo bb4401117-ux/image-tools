@@ -172,8 +172,8 @@ function App() {
 
   if (path === '/webp-to-jpg') {
     setPageSEO(
-      'WebP to JPG Converter Online Free',
-      'Convert WebP images to JPG online for free. Fast and private conversion directly in your browser.'
+      'WebP to JPG Converter Online Free – Convert WebP to JPG',
+      'Convert WebP images to JPG online for free. Fast, private and easy conversion directly in your browser.'
     )
     return (
       <ImageConverter
