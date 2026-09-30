@@ -1,5 +1,9 @@
 node_modules/
 dist/
+*.backup
+*.backup.*
+src-backup/
+.env
+.env.*
+!.env.example
 .DS_Store
-*.log
-.trae/

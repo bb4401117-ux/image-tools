@@ -17,9 +17,25 @@ export const IMAGE_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/gi
 export function isValidImage(file: File): Promise<boolean> {
   return new Promise((resolve) => {
     const img = new Image()
-    img.onload = () => resolve(true)
-    img.onerror = () => resolve(false)
-    img.src = URL.createObjectURL(file)
+    const url = URL.createObjectURL(file)
+
+    const cleanup = () => {
+      URL.revokeObjectURL(url)
+      img.onload = null
+      img.onerror = null
+    }
+
+    img.onload = () => {
+      cleanup()
+      resolve(true)
+    }
+
+    img.onerror = () => {
+      cleanup()
+      resolve(false)
+    }
+
+    img.src = url
   })
 }
 
@@ -127,7 +143,11 @@ export async function compressImage(
     const ctx = canvas.getContext('2d')
     const img = new Image()
 
+    const url = URL.createObjectURL(file)
+
     img.onload = () => {
+      URL.revokeObjectURL(url)
+
       let w = img.width
       let h = img.height
 
@@ -154,18 +174,27 @@ export async function compressImage(
       canvas.toBlob(
         (blob) => {
           if (blob) {
-            // If compressed is larger than original, keep original
-            if (blob.size > file.size) {
-              resolve(file)
-            } else {
-              const compressedFile = new File(
-                [blob],
-                file.name.replace(/\.[^/.]+$/, `.${format}`),
-                { type: `image/${format}` },
-              )
-              resolve(compressedFile)
-            }
+            const compressedFile = new File(
+              [blob],
+              file.name.replace(/\.[^/.]+$/, `.${format}`),
+              { type: `image/${format}` },
+            )
+
+            // Release decoded image and canvas memory after encoding is complete.
+            img.onload = null
+            img.onerror = null
+            img.src = ''
+            canvas.width = 1
+            canvas.height = 1
+
+            resolve(compressedFile)
           } else {
+            img.onload = null
+            img.onerror = null
+            img.src = ''
+            canvas.width = 1
+            canvas.height = 1
+
             reject(new Error('Failed to create blob'))
           }
         },
@@ -175,10 +204,11 @@ export async function compressImage(
     }
 
     img.onerror = () => {
+      URL.revokeObjectURL(url)
       reject(new Error('Failed to load image'))
     }
 
-    img.src = URL.createObjectURL(file)
+    img.src = url
   })
 }
 
@@ -196,16 +226,18 @@ export async function compressImageWithTargetSize(
     return bestResult
   }
 
-  // Step 2: If quality alone can't reach target, progressively reduce resolution
-  // (skipped when lockResolution is enabled)
+  // Step 2: If quality alone can't reach target, progressively reduce resolution.
+  // Load the image dimensions only once instead of decoding it for every step.
   if (!lockResolution) {
     const resolutions = [2560, 1920, 1280, 960, 640]
+    const img = await loadImage(file)
+    const longestSide = Math.max(img.width, img.height)
+
     for (const maxDim of resolutions) {
-      const img = await loadImage(file)
-      const longestSide = Math.max(img.width, img.height)
       if (longestSide <= maxDim) continue
 
       bestResult = await binarySearchQuality(file, targetSize, format, maxDim)
+
       if (bestResult && bestResult.size <= targetSize) {
         return bestResult
       }
@@ -254,9 +286,19 @@ async function binarySearchQuality(
 function loadImage(file: File): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()
-    img.onload = () => resolve(img)
-    img.onerror = () => reject(new Error('Failed to load image for dimension check'))
-    img.src = URL.createObjectURL(file)
+    const url = URL.createObjectURL(file)
+
+    img.onload = () => {
+      URL.revokeObjectURL(url)
+      resolve(img)
+    }
+
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to load image for dimension check'))
+    }
+
+    img.src = url
   })
 }
 

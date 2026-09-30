@@ -1,8 +1,15 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, lazy, Suspense } from 'react'
 import './App.css'
+import ResizeImage from './pages/ResizeImage'
+import ImageConverter from './pages/ImageConverter'
+import Home from './pages/Home'
+import InfoPage from './pages/InfoPage'
+
+const ImageToPdf = lazy(() => import('./pages/ImageToPdf'))
 import { compressImage, processFiles, createZip, compressImageWithTargetSize, IMAGE_FORMATS, isValidImage } from './utils/imageProcessor'
 import { useLocale } from './i18n/context'
 import { type Locale } from './i18n/locales'
+import { setPageSEO } from './utils/seo'
 
 interface FileItem {
   id: number
@@ -27,6 +34,158 @@ const CONCURRENCY = 4
 let nextId = 0
 
 function App() {
+  const [, setRoute] = useState(window.location.pathname)
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setRoute(window.location.pathname)
+    }
+
+    window.addEventListener('popstate', handleRouteChange)
+
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange)
+    }
+  }, [])
+
+  const path = window.location.pathname
+
+  if (path === '/') {
+    setPageSEO(
+      'Free Online Image Tools – Compress, Resize & Convert',
+      'Free online image tools to compress, resize and convert JPG, PNG and WebP images. Fast, private and processed directly in your browser.'
+    )
+    return <Home />
+  }
+
+  if (path === '/resize-image') {
+    setPageSEO(
+      'Resize Image Online Free – Change Image Dimensions',
+      'Resize JPG, PNG and WebP images online for free. Change image dimensions directly in your browser.'
+    )
+    return <ResizeImage />
+  }
+
+  if (path === '/compress-image') {
+    setPageSEO(
+      'Compress Image Online Free – JPG, PNG & WebP',
+      'Compress JPG, PNG and WebP images online for free. Reduce image file size directly in your browser without uploading your files.'
+    )
+    return <CompressorApp />
+  }
+
+  if (path === '/about') {
+    return <InfoPage type="about" />
+  }
+
+  if (path === '/privacy') {
+    return <InfoPage type="privacy" />
+  }
+
+  if (path === '/terms') {
+    return <InfoPage type="terms" />
+  }
+
+  if (path === '/contact') {
+    return <InfoPage type="contact" />
+  }
+
+  if (path === '/image-to-pdf') {
+    setPageSEO(
+      'Image to PDF Converter Online Free',
+      'Convert JPG, PNG and WebP images to PDF online for free. Combine multiple images into a PDF directly in your browser.'
+    )
+    return (
+      <Suspense fallback={<main className="converter-page"><p>Loading PDF tools…</p></main>}>
+        <ImageToPdf />
+      </Suspense>
+    )
+  }
+
+  if (path === '/jpg-to-png') {
+    setPageSEO(
+      'JPG to PNG Converter Online Free',
+      'Convert JPG images to PNG online for free. Fast, private conversion directly in your browser.'
+    )
+    return (
+      <ImageConverter
+        title="JPG to PNG Converter"
+        description="Convert JPG images to PNG format directly in your browser."
+        fromLabel="JPG"
+        outputFormat="png"
+        accept="image/jpeg,.jpg,.jpeg"
+      />
+    )
+  }
+
+  if (path === '/png-to-jpg') {
+    setPageSEO(
+      'PNG to JPG Converter Online Free',
+      'Convert PNG images to JPG online for free. Fast, private conversion directly in your browser.'
+    )
+    return (
+      <ImageConverter
+        title="PNG to JPG Converter"
+        description="Convert PNG images to JPG format directly in your browser."
+        fromLabel="PNG"
+        outputFormat="jpeg"
+        accept="image/png,.png"
+      />
+    )
+  }
+
+  if (path === '/jpg-to-webp') {
+    setPageSEO(
+      'JPG to WebP Converter Online Free',
+      'Convert JPG images to WebP online for free. Create smaller modern image files directly in your browser.'
+    )
+    return (
+      <ImageConverter
+        title="JPG to WebP Converter"
+        description="Convert JPG images to WebP format directly in your browser."
+        fromLabel="JPG"
+        outputFormat="webp"
+        accept="image/jpeg,.jpg,.jpeg"
+      />
+    )
+  }
+
+  if (path === '/png-to-webp') {
+    setPageSEO(
+      'PNG to WebP Converter Online Free',
+      'Convert PNG images to WebP online for free. Create smaller WebP images directly in your browser.'
+    )
+    return (
+      <ImageConverter
+        title="PNG to WebP Converter"
+        description="Convert PNG images to WebP format directly in your browser."
+        fromLabel="PNG"
+        outputFormat="webp"
+        accept="image/png,.png"
+      />
+    )
+  }
+
+  if (path === '/webp-to-jpg') {
+    setPageSEO(
+      'WebP to JPG Converter Online Free',
+      'Convert WebP images to JPG online for free. Fast and private conversion directly in your browser.'
+    )
+    return (
+      <ImageConverter
+        title="WebP to JPG Converter"
+        description="Convert WebP images to JPG format directly in your browser."
+        fromLabel="WebP"
+        outputFormat="jpeg"
+        accept="image/webp,.webp"
+      />
+    )
+  }
+
+  return <Home />
+}
+
+function CompressorApp() {
   const { locale, setLocale, t } = useLocale()
   const [files, setFiles] = useState<FileItem[]>([])
   const [isDragging, setIsDragging] = useState(false)
@@ -40,11 +199,24 @@ function App() {
   const [completedCount, setCompletedCount] = useState(0)
   const dropRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const previewUrlsRef = useRef<Set<string>>(new Set())
 
-  // Cleanup preview URLs on unmount
+  const createPreviewUrl = (file: File) => {
+    const url = URL.createObjectURL(file)
+    previewUrlsRef.current.add(url)
+    return url
+  }
+
+  const revokePreviewUrl = (url: string) => {
+    URL.revokeObjectURL(url)
+    previewUrlsRef.current.delete(url)
+  }
+
+  // Release every remaining preview URL when the compressor unmounts.
   useEffect(() => {
     return () => {
-      files.forEach(f => URL.revokeObjectURL(f.preview))
+      previewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url))
+      previewUrlsRef.current.clear()
     }
   }, [])
 
@@ -63,7 +235,7 @@ function App() {
           size: item.size,
           type: item.type,
           file: item.file,
-          preview: URL.createObjectURL(item.file),
+          preview: createPreviewUrl(item.file),
           status: 'pending' as const,
         })
       }
@@ -108,7 +280,7 @@ function App() {
           size: file.size,
           type: file.type,
           file,
-          preview: URL.createObjectURL(file),
+          preview: createPreviewUrl(file),
           status: 'pending',
         })
       }
@@ -120,13 +292,13 @@ function App() {
   const handleRemoveFile = (id: number) => {
     setFiles(prev => {
       const item = prev.find(f => f.id === id)
-      if (item) URL.revokeObjectURL(item.preview)
+      if (item) revokePreviewUrl(item.preview)
       return prev.filter(f => f.id !== id)
     })
   }
 
   const handleClearAll = () => {
-    files.forEach(f => URL.revokeObjectURL(f.preview))
+    files.forEach(f => revokePreviewUrl(f.preview))
     setFiles([])
     setCompletedCount(0)
   }
@@ -200,28 +372,40 @@ function App() {
     setIsCompressing(false)
   }
 
+  const triggerDownload = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+
+    a.href = url
+    a.download = filename
+    a.style.display = 'none'
+
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+
+    // Give the browser time to start the download before releasing the URL.
+    window.setTimeout(() => {
+      URL.revokeObjectURL(url)
+    }, 1000)
+  }
+
   const handleDownloadAll = async () => {
     if (files.length === 0 || isCompressing) return
-    const compressedFiles = files.filter(f => f.compressedFile).map(f => f.compressedFile!)
+
+    const compressedFiles = files
+      .filter(f => f.compressedFile)
+      .map(f => f.compressedFile!)
+
     if (compressedFiles.length === 0) return
 
     const blob = await createZip(compressedFiles)
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `compressed-images-${Date.now()}.zip`
-    a.click()
-    URL.revokeObjectURL(url)
+    triggerDownload(blob, `compressed-images-${Date.now()}.zip`)
   }
 
   const handleDownloadSingle = (file: File) => {
     if (isCompressing) return
-    const url = URL.createObjectURL(file)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = file.name
-    a.click()
-    URL.revokeObjectURL(url)
+    triggerDownload(file, file.name)
   }
 
   const getFileSize = (size: number) => {
@@ -255,6 +439,27 @@ function App() {
   const allDone = files.length > 0 && files.every(f => f.status === 'completed' || f.status === 'error')
   const hasCompressed = files.some(f => f.status === 'completed' && f.compressedFile)
   const hasAnyFile = files.length > 0
+
+  const completedFiles = files.filter(
+    f => f.status === 'completed' && f.compressedFile
+  )
+
+  const totalOriginalSize = completedFiles.reduce(
+    (sum, f) => sum + f.size,
+    0
+  )
+
+  const totalCompressedSize = completedFiles.reduce(
+    (sum, f) => sum + (f.compressedSize ?? 0),
+    0
+  )
+
+  const totalSavingPercent =
+    totalOriginalSize > 0
+      ? Math.round(
+          ((totalOriginalSize - totalCompressedSize) / totalOriginalSize) * 100
+        )
+      : 0
 
   return (
     <div className="app">
@@ -352,7 +557,7 @@ function App() {
           </div>
         </div>
 
-        {/* Main drop zone */}
+        {/* Main upload area */}
         <div
           ref={dropRef}
           onDragOver={handleDragOver}
@@ -361,12 +566,54 @@ function App() {
           className={`drop-area ${isDragging ? 'drag-over' : ''} ${hasAnyFile ? 'drop-area-compact' : ''}`}
         >
           <div className="drop-content">
-            <svg xmlns="http://www.w3.org/2000/svg" className="drop-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="drop-icon"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 0115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              />
             </svg>
-            <p className="drop-text">{hasAnyFile ? t('drop.subtitle') : t('drop.title')}</p>
+
+            <div className="drop-text-group">
+              <p className="drop-heading">
+                {hasAnyFile ? t('drop.subtitle') : t('drop.title')}
+              </p>
+
+              <p className="drop-hint">
+                JPG, PNG, WebP
+              </p>
+
+              <button
+                type="button"
+                className="btn-upload"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isCompressing}
+              >
+                {hasAnyFile ? '+ Add Images' : 'Choose Images'}
+              </button>
+
+              <p className="drop-desktop-hint">
+                or drag & drop your images here
+              </p>
+            </div>
           </div>
         </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+          multiple
+          onChange={handleFileSelect}
+          style={{ display: 'none' }}
+        />
 
         {/* File cards */}
         {hasAnyFile && (
@@ -395,14 +642,6 @@ function App() {
                 <button onClick={handleClearAll} className="btn-small btn-danger" disabled={isCompressing}>
                   {t('button.clearAll')}
                 </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleFileSelect}
-                  style={{ display: 'none' }}
-                />
               </div>
             </div>
 
@@ -464,6 +703,38 @@ function App() {
             </div>
 
             {/* Bottom action bar */}
+            {allDone && completedFiles.length > 0 && (
+              <div className="compression-summary">
+                <div className="summary-item">
+                  <span className="summary-label">Images</span>
+                  <strong>{completedFiles.length}</strong>
+                </div>
+
+                <div className="summary-item">
+                  <span className="summary-label">Original</span>
+                  <strong>{getFileSize(totalOriginalSize)}</strong>
+                </div>
+
+                <div className="summary-item">
+                  <span className="summary-label">Compressed</span>
+                  <strong>{getFileSize(totalCompressedSize)}</strong>
+                </div>
+
+                <div className="summary-item">
+                  <span className="summary-label">
+                    {totalSavingPercent > 0 ? 'Saved' : 'Size change'}
+                  </span>
+                  <strong>
+                    {totalSavingPercent > 0
+                      ? `${totalSavingPercent}%`
+                      : totalSavingPercent === 0
+                        ? '0%'
+                        : `+${Math.abs(totalSavingPercent)}%`}
+                  </strong>
+                </div>
+              </div>
+            )}
+
             <div className="action-bar">
               {!isCompressing && !allDone && (
                 <button onClick={handleCompress} className="btn-primary btn-compress">
