@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
+import { useLocale } from '../i18n/context';
 
 export default function ResizeImage() {
+  const { t } = useLocale();
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState('');
@@ -13,7 +15,7 @@ export default function ResizeImage() {
 
   const chooseFile = (selected: File) => {
     if (!selected.type.startsWith('image/')) {
-      setError('Please select an image file.');
+      setError(t('common.invalidImage'));
       return;
     }
 
@@ -65,7 +67,7 @@ export default function ResizeImage() {
     const h = Number(height);
 
     if (!w || !h || w < 1 || h < 1) {
-      setError('Enter valid dimensions.');
+      setError(t('resize.invalidDimensions'));
       return;
     }
 
@@ -114,7 +116,7 @@ export default function ResizeImage() {
       setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
       setError('');
     } catch {
-      setError('Could not resize this image.');
+      setError(t('resize.failed'));
     }
   };
 
@@ -131,8 +133,8 @@ export default function ResizeImage() {
     <main className="resize-page">
       <section className="resize-hero">
         <p className="resize-eyebrow">IMAGE TOOL</p>
-        <h1>Resize Image Online</h1>
-        <p>Resize JPG, PNG and WebP images directly in your browser.</p>
+        <h1>{t('resize.title')}</h1>
+        <p>{t('resize.description')}</p>
       </section>
 
       <section className="resize-card">
@@ -153,22 +155,22 @@ export default function ResizeImage() {
             className="resize-upload"
             onClick={() => inputRef.current?.click()}
           >
-            <strong>Choose an Image</strong>
-            <span>JPG, PNG or WebP</span>
+            <strong>{t('resize.choose')}</strong>
+            <span>{t('resize.formatHint')}</span>
           </button>
         ) : (
           <>
             <div className="resize-preview">
-              <img src={preview} alt="Selected image preview" />
+              <img src={preview} alt={t('resize.selectedPreview')} />
             </div>
 
             <p className="resize-original">
-              Original: {originalWidth} × {originalHeight}px
+              {t('resize.original')}: {originalWidth} × {originalHeight}px
             </p>
 
             <div className="resize-fields">
               <label>
-                Width
+                {t('resize.width')}
                 <input
                   type="number"
                   min="1"
@@ -180,7 +182,7 @@ export default function ResizeImage() {
               <span>×</span>
 
               <label>
-                Height
+                {t('resize.height')}
                 <input
                   type="number"
                   min="1"
@@ -196,16 +198,16 @@ export default function ResizeImage() {
                 checked={lockRatio}
                 onChange={(e) => setLockRatio(e.target.checked)}
               />
-              Keep aspect ratio
+              {t('resize.keepRatio')}
             </label>
 
             <div className="resize-actions">
               <button type="button" className="resize-primary" onClick={resize}>
-                Resize & Download
+                {t('resize.download')}
               </button>
 
               <button type="button" className="resize-secondary" onClick={reset}>
-                Choose Another
+                {t('resize.chooseAnother')}
               </button>
             </div>
           </>

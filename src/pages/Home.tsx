@@ -1,10 +1,22 @@
 import './Home.css';
+import { useLocale } from '../i18n/context';
+import { type Locale, type MessageKey } from '../i18n/locales';
+
+const LOCALE_LABELS: Record<Locale, string> = {
+  en: 'English',
+  fr: 'Français',
+  es: 'Español',
+  de: 'Deutsch',
+  ar: 'العربية',
+  'zh-CN': '中文',
+  ja: '日本語',
+};
 
 interface Tool {
   path: string;
   icon: string;
-  title: string;
-  description: string;
+  title: MessageKey;
+  description: MessageKey;
   available: boolean;
 }
 
@@ -12,62 +24,63 @@ const tools: Tool[] = [
   {
     path: '/compress-image',
     icon: '🗜️',
-    title: 'Compress Image',
-    description: 'Reduce JPG, PNG and WebP file sizes directly in your browser.',
+    title: 'home.compress.title',
+    description: 'home.compress.description',
     available: true,
   },
   {
     path: '/resize-image',
     icon: '📐',
-    title: 'Resize Image',
-    description: 'Change image dimensions while keeping the quality you need.',
+    title: 'home.resize.title',
+    description: 'home.resize.description',
     available: true,
   },
   {
     path: '/jpg-to-png',
     icon: '🔄',
-    title: 'JPG to PNG',
-    description: 'Convert JPG images to PNG format quickly and privately.',
+    title: 'home.jpgToPng.title',
+    description: 'home.jpgToPng.description',
     available: true,
   },
   {
     path: '/png-to-jpg',
     icon: '🔄',
-    title: 'PNG to JPG',
-    description: 'Convert PNG images to JPG format in your browser.',
+    title: 'home.pngToJpg.title',
+    description: 'home.pngToJpg.description',
     available: true,
   },
   {
     path: '/jpg-to-webp',
     icon: '🌐',
-    title: 'JPG to WebP',
-    description: 'Convert JPG images to modern WebP format.',
+    title: 'home.jpgToWebp.title',
+    description: 'home.jpgToWebp.description',
     available: true,
   },
   {
     path: '/png-to-webp',
     icon: '🌐',
-    title: 'PNG to WebP',
-    description: 'Convert PNG images to smaller WebP files.',
+    title: 'home.pngToWebp.title',
+    description: 'home.pngToWebp.description',
     available: true,
   },
   {
     path: '/webp-to-jpg',
     icon: '🔄',
-    title: 'WebP to JPG',
-    description: 'Convert WebP images to JPG format directly in your browser.',
+    title: 'home.webpToJpg.title',
+    description: 'home.webpToJpg.description',
     available: true,
   },
   {
     path: '/image-to-pdf',
     icon: '📄',
-    title: 'Image to PDF',
-    description: 'Convert one or multiple images into a PDF directly in your browser.',
+    title: 'home.imageToPdf.title',
+    description: 'home.imageToPdf.description',
     available: true,
   },
 ];
 
 export default function Home() {
+  const { locale, setLocale, t } = useLocale();
   const openTool = (tool: Tool) => {
     if (!tool.available) return;
 
@@ -77,10 +90,22 @@ export default function Home() {
 
   return (
     <main className="home-page">
+      <div className="home-language-switcher">
+        <span className="language-icon" aria-hidden="true">🌐</span>
+        <select
+          aria-label="Select language"
+          value={locale}
+          onChange={(e) => setLocale(e.target.value as Locale)}
+        >
+          {Object.entries(LOCALE_LABELS).map(([key, label]) => (
+            <option key={key} value={key}>{label}</option>
+          ))}
+        </select>
+      </div>
       <section className="home-hero">
         <p className="home-eyebrow">IMAGETOOLS</p>
 
-        <h1>Free Online Image Tools</h1>
+        <h1>{t('home.title')}</h1>
 
         <p>
           Compress, resize and convert your images quickly and privately.
@@ -90,8 +115,8 @@ export default function Home() {
 
       <section className="tools-section">
         <div className="tools-heading">
-          <h2>Image Tools</h2>
-          <p>Choose a tool to get started.</p>
+          <h2>{t('home.toolsTitle')}</h2>
+          <p>{t('home.toolsSubtitle')}</p>
         </div>
 
         <div className="tools-grid">
@@ -108,8 +133,8 @@ export default function Home() {
               </span>
 
               <span className="tool-content">
-                <strong>{tool.title}</strong>
-                <span>{tool.description}</span>
+                <strong>{t(tool.title)}</strong>
+                <span>{t(tool.description)}</span>
               </span>
 
               {!tool.available && (
@@ -132,10 +157,9 @@ export default function Home() {
         </div>
 
         <div>
-          <h2>Your images stay private</h2>
+          <h2>{t('home.privacyTitle')}</h2>
           <p>
-            Image processing happens locally in your browser. Your images do
-            not need to be uploaded to a server for these tools to work.
+            {t('home.privacyText')}
           </p>
         </div>
       </section>
@@ -143,7 +167,7 @@ export default function Home() {
       <footer className="home-footer">
         <div className="home-footer-brand">
           <strong>ImageTools</strong>
-          <span>Simple and private image tools for everyone.</span>
+          <span>{t('home.footerDescription')}</span>
         </div>
 
         <nav className="home-footer-links" aria-label="Footer navigation">
@@ -189,7 +213,7 @@ export default function Home() {
         </nav>
 
         <p className="home-footer-copy">
-          © {new Date().getFullYear()} ImageTools. All rights reserved.
+          © {new Date().getFullYear()} ImageTools. {t('home.rights')}
         </p>
       </footer>
     </main>

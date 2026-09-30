@@ -271,3 +271,25 @@
   }
 }
 
+
+.home-language-switcher {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.language-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.home-language-switcher select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: inherit;
+  color: inherit;
+  cursor: pointer;
+}

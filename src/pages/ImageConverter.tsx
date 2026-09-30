@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLocale } from '../i18n/context'
 
 interface Props {
   title: string
@@ -15,6 +16,8 @@ export default function ImageConverter({
   outputFormat,
   accept,
 }: Props) {
+  const { t } = useLocale()
+
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState('')
   const [output, setOutput] = useState<File | null>(null)
@@ -22,6 +25,8 @@ export default function ImageConverter({
   const [error, setError] = useState('')
 
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const outputLabel = outputFormat === 'jpeg' ? 'JPG' : outputFormat.toUpperCase()
 
   useEffect(() => {
     return () => {
@@ -35,7 +40,7 @@ export default function ImageConverter({
     if (!nextFile) return
 
     if (!nextFile.type.startsWith('image/')) {
-      setError('Please choose a valid image file.')
+      setError(t('common.invalidImage'))
       return
     }
 
@@ -51,7 +56,7 @@ export default function ImageConverter({
 
   const convert = async () => {
     if (!file) {
-      setError('Choose an image first.')
+      setError(t('common.chooseImageFirst'))
       return
     }
 
@@ -66,13 +71,12 @@ export default function ImageConverter({
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve()
         img.onerror = () => reject(
-          new Error('Could not read the image.')
+          new Error(t('common.conversionFailed'))
         )
         img.src = url
       })
 
       const canvas = document.createElement('canvas')
-
       canvas.width = img.naturalWidth
       canvas.height = img.naturalHeight
 
@@ -80,7 +84,7 @@ export default function ImageConverter({
 
       if (!ctx) {
         URL.revokeObjectURL(url)
-        throw new Error('Could not create the image canvas.')
+        throw new Error(t('common.conversionFailed'))
       }
 
       if (outputFormat === 'jpeg') {
@@ -101,7 +105,7 @@ export default function ImageConverter({
       URL.revokeObjectURL(url)
 
       if (!blob) {
-        throw new Error('Conversion failed.')
+        throw new Error(t('common.conversionFailed'))
       }
 
       const extension =
@@ -125,7 +129,7 @@ export default function ImageConverter({
       setError(
         err instanceof Error
           ? err.message
-          : 'Conversion failed.',
+          : t('common.conversionFailed'),
       )
     } finally {
       setBusy(false)
@@ -140,6 +144,7 @@ export default function ImageConverter({
 
     link.href = url
     link.download = output.name
+    link.rel = 'noopener'
 
     document.body.appendChild(link)
     link.click()
@@ -169,7 +174,7 @@ export default function ImageConverter({
     <main className="converter-page">
       <section className="converter-hero">
         <span className="converter-badge">
-          {fromLabel} → {outputFormat.toUpperCase()}
+          {fromLabel} → {outputLabel}
         </span>
 
         <h1>{title}</h1>
@@ -192,20 +197,21 @@ export default function ImageConverter({
             className="converter-upload"
             onClick={() => inputRef.current?.click()}
           >
-            Choose Image
+            {t('common.chooseImage')}
           </button>
         ) : (
           <>
             <img
               className="converter-preview"
               src={preview}
-              alt="Selected image preview"
+              alt={t('common.selectedImagePreview')}
             />
 
             <div className="converter-file">
               <strong>{file.name}</strong>
               <span>{(file.size / 1024).toFixed(1)} KB</span>
             </div>
+
             {!output && (
               <button
                 className="converter-primary"
@@ -213,14 +219,17 @@ export default function ImageConverter({
                 disabled={busy}
               >
                 {busy
-                  ? 'Converting…'
-                  : `Convert to ${outputFormat.toUpperCase()}`}
+                  ? t('common.converting')
+                  : t('common.convertTo').replace(
+                      '{format}',
+                      outputLabel,
+                    )}
               </button>
             )}
 
             {output && (
               <div className="converter-result">
-                <strong>Conversion complete</strong>
+                <strong>{t('common.conversionComplete')}</strong>
 
                 <span>
                   {output.name} · {(output.size / 1024).toFixed(1)} KB
@@ -230,16 +239,17 @@ export default function ImageConverter({
                   className="converter-download"
                   onClick={download}
                 >
-                  Download
+                  {t('common.download')}
                 </button>
               </div>
             )}
+
             <button
               className="converter-secondary"
               onClick={reset}
               disabled={busy}
             >
-              Choose Another Image
+              {t('common.chooseAnotherImage')}
             </button>
           </>
         )}

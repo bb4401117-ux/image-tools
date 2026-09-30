@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { jsPDF } from 'jspdf'
+import { useLocale } from '../i18n/context'
 
 interface PdfImage {
   file: File
@@ -7,6 +8,7 @@ interface PdfImage {
 }
 
 export default function ImageToPdf() {
+  const { t } = useLocale()
   const [images, setImages] = useState<PdfImage[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -28,7 +30,7 @@ export default function ImageToPdf() {
     )
 
     if (!selected.length) {
-      setError('Please choose one or more image files.')
+      setError(t('pdf.chooseOneOrMore'))
       return
     }
 
@@ -47,7 +49,7 @@ export default function ImageToPdf() {
 
   const createPdf = async () => {
     if (!images.length) {
-      setError('Choose at least one image first.')
+      setError(t('pdf.chooseAtLeastOne'))
       return
     }
 
@@ -76,7 +78,7 @@ export default function ImageToPdf() {
             const ctx = canvas.getContext('2d')
 
             if (!ctx) {
-              reject(new Error('Could not create image canvas.'))
+              reject(new Error(t('pdf.couldNotCreateCanvas')))
               return
             }
 
@@ -86,7 +88,7 @@ export default function ImageToPdf() {
           }
 
           img.onerror = () => {
-            reject(new Error(`Could not read ${image.file.name}.`))
+            reject(new Error(t('pdf.couldNotRead').replace('{name}', image.file.name)))
           }
 
           img.src = image.preview
@@ -106,7 +108,7 @@ export default function ImageToPdf() {
 
         await new Promise<void>((resolve, reject) => {
           img.onload = () => resolve()
-          img.onerror = () => reject(new Error('Could not prepare PDF image.'))
+          img.onerror = () => reject(new Error(t('pdf.couldNotPrepareImage')))
           img.src = dataUrl
         })
 
@@ -130,7 +132,7 @@ export default function ImageToPdf() {
       setError(
         err instanceof Error
           ? err.message
-          : 'Could not create the PDF.',
+          : t('pdf.couldNotCreate'),
       )
     } finally {
       setBusy(false)
@@ -196,10 +198,10 @@ export default function ImageToPdf() {
           IMAGE → PDF
         </span>
 
-        <h1>Image to PDF Converter</h1>
+        <h1>{t('pdf.title')}</h1>
 
         <p>
-          Convert one or multiple images into a PDF directly in your browser.
+          {t('pdf.description')}
         </p>
       </section>
 
@@ -218,7 +220,7 @@ export default function ImageToPdf() {
             className="converter-upload"
             onClick={() => inputRef.current?.click()}
           >
-            Choose Images
+            {t('pdf.chooseImages')}
           </button>
         ) : (
           <>
@@ -244,24 +246,24 @@ export default function ImageToPdf() {
                 onClick={createPdf}
                 disabled={busy}
               >
-                {busy ? 'Creating PDF…' : 'Create PDF'}
+                {busy ? t('pdf.creating') : t('pdf.create')}
               </button>
             )}
 
             {pdfBlob && (
               <div className="converter-result">
-                <strong>PDF created successfully</strong>
+                <strong>{t('pdf.created')}</strong>
 
                 <span>
                   {images.length}{' '}
-                  {images.length === 1 ? 'image' : 'images'} added to PDF
+                  {images.length === 1 ? t('pdf.image') : t('pdf.images')} {t('pdf.addedToPdf')}
                 </span>
 
                 <button
                   className="converter-download"
                   onClick={downloadPdf}
                 >
-                  Download PDF
+                  {t('common.download')} PDF
                 </button>
               </div>
             )}
@@ -271,7 +273,7 @@ export default function ImageToPdf() {
               onClick={reset}
               disabled={busy}
             >
-              Choose Other Images
+              {t('common.chooseAnotherImage')}
             </button>
           </>
         )}

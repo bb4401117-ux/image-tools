@@ -24,8 +24,12 @@ interface FileItem {
 }
 
 const LOCALE_LABELS: Record<Locale, string> = {
-  'zh-CN': '中文',
   en: 'English',
+  fr: 'Français',
+  es: 'Español',
+  de: 'Deutsch',
+  ar: 'العربية',
+  'zh-CN': '中文',
   ja: '日本語',
 }
 
