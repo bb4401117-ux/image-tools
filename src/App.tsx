@@ -72,8 +72,8 @@ function App() {
 
   if (path === '/compress-image') {
     setPageSEO(
-      'Compress Image Online Free – JPG, PNG & WebP',
-      'Compress JPG, PNG and WebP images online for free. Reduce image file size directly in your browser without uploading your files.'
+      'Compress Image Online Free – Reduce JPG, PNG & WebP Size',
+      'Compress JPG, PNG and WebP images online for free. Reduce image file size and keep your images private with browser-based image compression.'
     )
     return <CompressorApp />
   }
