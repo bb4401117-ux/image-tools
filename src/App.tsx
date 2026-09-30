@@ -64,8 +64,8 @@ function App() {
 
   if (path === '/resize-image') {
     setPageSEO(
-      'Resize Image Online Free – Change Image Dimensions',
-      'Resize JPG, PNG and WebP images online for free. Change image dimensions directly in your browser.'
+      'Resize Image Online Free – Change JPG, PNG & WebP Dimensions',
+      'Resize JPG, PNG and WebP images online for free. Change image dimensions quickly and privately directly in your browser.'
     )
     return <ResizeImage />
   }
