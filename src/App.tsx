@@ -96,8 +96,8 @@ function App() {
 
   if (path === '/image-to-pdf') {
     setPageSEO(
-      'Image to PDF Converter Online Free',
-      'Convert JPG, PNG and WebP images to PDF online for free. Combine multiple images into a PDF directly in your browser.'
+      'Image to PDF Converter Online Free – Convert Images to PDF',
+      'Convert JPG, PNG and WebP images to PDF online for free. Combine multiple images into one PDF quickly and privately in your browser.'
     )
     return (
       <Suspense fallback={<main className="converter-page"><p>Loading PDF tools…</p></main>}>
