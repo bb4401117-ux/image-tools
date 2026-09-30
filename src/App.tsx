@@ -156,8 +156,8 @@ function App() {
 
   if (path === '/png-to-webp') {
     setPageSEO(
-      'PNG to WebP Converter Online Free',
-      'Convert PNG images to WebP online for free. Create smaller WebP images directly in your browser.'
+      'PNG to WebP Converter Online Free – Convert PNG to WebP',
+      'Convert PNG images to WebP online for free. Create smaller, modern image files quickly and privately in your browser.'
     )
     return (
       <ImageConverter
