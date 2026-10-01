@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://image-tools-6vq.pages.dev/</loc>
+    <loc>https://image-tools-6vq.pages.dev/en</loc>
   </url>
   <url>
-    <loc>https://image-tools-6vq.pages.dev/resize-image</loc>
+    <loc>https://image-tools-6vq.pages.dev/en/resize-image</loc>
   </url>
   <url>
-    <loc>https://image-tools-6vq.pages.dev/compress-image</loc>
+    <loc>https://image-tools-6vq.pages.dev/en/compress-image</loc>
   </url>
 </urlset>
