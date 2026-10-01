@@ -86,13 +86,6 @@ export default function Home() {
     return `/${nextLocale}${path === '/' ? '' : path}`;
   };
 
-  const openTool = (tool: Tool) => {
-    if (!tool.available) return;
-
-    window.history.pushState({}, '', localizedPath(tool.path));
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  };
-
   const changeLanguage = (nextLocale: Locale) => {
     setLocale(nextLocale);
 
@@ -144,32 +137,44 @@ export default function Home() {
 
         <div className="tools-grid">
           {tools.map((tool) => (
-            <button
-              key={tool.path}
-              type="button"
-              className={`tool-card ${tool.available ? '' : 'tool-card-disabled'}`}
-              onClick={() => openTool(tool)}
-              disabled={!tool.available}
-            >
-              <span className="tool-icon" aria-hidden="true">
-                {tool.icon}
-              </span>
+            tool.available ? (
+              <a
+                key={tool.path}
+                href={localizedPath(tool.path)}
+                className="tool-card"
+              >
+                <span className="tool-icon" aria-hidden="true">
+                  {tool.icon}
+                </span>
 
-              <span className="tool-content">
-                <strong>{t(tool.title)}</strong>
-                <span>{t(tool.description)}</span>
-              </span>
+                <span className="tool-content">
+                  <strong>{t(tool.title)}</strong>
+                  <span>{t(tool.description)}</span>
+                </span>
 
-              {!tool.available && (
-                <span className="tool-status">Coming soon</span>
-              )}
-
-              {tool.available && (
                 <span className="tool-arrow" aria-hidden="true">
                   →
                 </span>
-              )}
-            </button>
+              </a>
+            ) : (
+              <button
+                key={tool.path}
+                type="button"
+                className="tool-card tool-card-disabled"
+                disabled
+              >
+                <span className="tool-icon" aria-hidden="true">
+                  {tool.icon}
+                </span>
+
+                <span className="tool-content">
+                  <strong>{t(tool.title)}</strong>
+                  <span>{t(tool.description)}</span>
+                </span>
+
+                <span className="tool-status">Coming soon</span>
+              </button>
+            )
           ))}
         </div>
       </section>
