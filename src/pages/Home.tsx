@@ -109,7 +109,7 @@ export default function Home() {
       <div className="home-language-switcher">
         <span className="language-icon" aria-hidden="true">🌐</span>
         <select
-          aria-label="Select language"
+          aria-label={t('home.language')}
           value={locale}
           onChange={(e) => changeLanguage(e.target.value as Locale)}
         >
@@ -202,41 +202,41 @@ export default function Home() {
           <button
             type="button"
             onClick={() => {
-  window.history.pushState({}, '', '/about');
+  window.history.pushState({}, '', localizedPath('/about'));
   window.dispatchEvent(new PopStateEvent('popstate'));
 }}
           >
-            About
+            {t('home.about')}
           </button>
 
           <button
             type="button"
             onClick={() => {
-  window.history.pushState({}, '', '/privacy');
+  window.history.pushState({}, '', localizedPath('/privacy'));
   window.dispatchEvent(new PopStateEvent('popstate'));
 }}
           >
-            Privacy
+            {t('home.privacy')}
           </button>
 
           <button
             type="button"
             onClick={() => {
-  window.history.pushState({}, '', '/terms');
+  window.history.pushState({}, '', localizedPath('/terms'));
   window.dispatchEvent(new PopStateEvent('popstate'));
 }}
           >
-            Terms
+            {t('home.terms')}
           </button>
 
           <button
             type="button"
             onClick={() => {
-  window.history.pushState({}, '', '/contact');
+  window.history.pushState({}, '', localizedPath('/contact'));
   window.dispatchEvent(new PopStateEvent('popstate'));
 }}
           >
-            Contact
+            {t('home.contact')}
           </button>
         </nav>
 

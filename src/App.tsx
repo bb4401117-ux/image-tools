@@ -4,6 +4,7 @@ import ResizeImage from './pages/ResizeImage'
 import ImageConverter from './pages/ImageConverter'
 import Home from './pages/Home'
 import InfoPage from './pages/InfoPage'
+import NotFound from './pages/NotFound'
 
 const ImageToPdf = lazy(() => import('./pages/ImageToPdf'))
 import { compressImage, processFiles, createZip, compressImageWithTargetSize, IMAGE_FORMATS, isValidImage } from './utils/imageProcessor'
@@ -284,7 +285,7 @@ function App() {
     )
   }
 
-  return <Home />
+  return <NotFound />
 }
 
 function CompressorApp() {
