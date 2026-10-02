@@ -22,7 +22,11 @@ const PAGES = [
 ]
 
 function localizedPath(pagePath, locale) {
-  return `/${locale}${pagePath === '/' ? '' : pagePath}`
+  if (pagePath === '/') {
+    return `/${locale}`
+  }
+
+  return `/${locale}${pagePath}.html`
 }
 
 function escapeXml(value) {
