@@ -159,7 +159,7 @@ function escapeHtml(value) {
 }
 
 function localizedPath(pagePath, locale) {
-  return `/${locale}${pagePath === '/' ? '' : pagePath}`
+  return `/${locale}${pagePath === '/' ? '/' : pagePath}`
 }
 
 function buildHead(page, locale) {

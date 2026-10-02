@@ -12,7 +12,7 @@ function getLocalizedPath(pathname: string, locale: string) {
     ? '/' + segments.slice(1).join('/')
     : pathname || '/'
 
-  return `/${locale}${currentPath === '/' ? '' : currentPath}`
+  return `/${locale}${currentPath === '/' ? '/' : currentPath}`
 }
 
 function setCanonical(href: string) {
