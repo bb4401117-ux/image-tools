@@ -150,9 +150,12 @@ function App() {
   const hasLocalePrefix = ['en', 'fr', 'es', 'de', 'ar', 'zh-CN', 'ja'].includes(firstSegment)
   const locale: Locale = hasLocalePrefix ? firstSegment : 'en'
 
-  const path = hasLocalePrefix
-    ? '/' + pathname.split('/').slice(2).join('/')
-    : pathname
+  const path = (() => {
+    let p = hasLocalePrefix ? "/" + pathname.split("/").slice(2).join("/") : pathname
+    if (p.endsWith(".html")) p = p.slice(0, -5)
+    if (p.length > 1 && p.endsWith("/")) p = p.slice(0, -1)
+    return p || "/"
+  })()
 
   if (path === '/') {
     applyPageSEO("home", locale)

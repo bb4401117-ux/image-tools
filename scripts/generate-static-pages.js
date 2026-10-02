@@ -207,7 +207,7 @@ for (const [page, pagePath] of Object.entries(PAGES)) {
     const outputPath =
       pagePath === '/'
         ? path.join(DIST_DIR, locale, 'index.html')
-        : path.join(DIST_DIR, locale, pagePath.slice(1), 'index.html')
+        : path.join(DIST_DIR, locale, pagePath.slice(1) + '.html')
 
     fs.mkdirSync(path.dirname(outputPath), { recursive: true })
 
