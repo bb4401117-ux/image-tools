@@ -8,13 +8,9 @@ function getLocalizedPath(pathname: string, locale: string) {
     firstSegment as (typeof LOCALES)[number],
   )
 
-  let currentPath = hasLocalePrefix
+  const currentPath = hasLocalePrefix
     ? '/' + segments.slice(1).join('/')
     : pathname || '/'
-
-  if (currentPath !== '/' && !currentPath.endsWith('.html')) {
-    currentPath += '.html'
-  }
 
   return `/${locale}${currentPath === '/' ? '' : currentPath}`
 }
