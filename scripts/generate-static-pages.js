@@ -183,6 +183,32 @@ function buildHead(page, locale) {
   ].join('\n')
 }
 
+function buildStaticToolLinks(locale) {
+  const links = [
+    ['/compress-image', 'Compress Image'],
+    ['/resize-image', 'Resize Image'],
+    ['/jpg-to-png', 'JPG to PNG'],
+    ['/png-to-jpg', 'PNG to JPG'],
+    ['/jpg-to-webp', 'JPG to WebP'],
+    ['/png-to-webp', 'PNG to WebP'],
+    ['/webp-to-jpg', 'WebP to JPG'],
+    ['/image-to-pdf', 'Image to PDF'],
+  ]
+
+  return links
+    .map(([pagePath, label]) => `<a href="/${locale}${pagePath}">${label}</a>`)
+    .join('\n')
+}
+
+function injectStaticLinks(html, locale) {
+  const links = buildStaticToolLinks(locale)
+
+  return html.replace(
+    /<div id="root"><\/div>/i,
+    `<div id="root"><nav aria-label="Image tools">${links}</nav></div>`,
+  )
+}
+
 function injectSeo(html, page, locale) {
   const head = buildHead(page, locale)
 
@@ -211,7 +237,8 @@ for (const [page, pagePath] of Object.entries(PAGES)) {
 
     fs.mkdirSync(path.dirname(outputPath), { recursive: true })
 
-    const html = injectSeo(template, page, locale)
+    let html = injectSeo(template, page, locale)
+    html = injectStaticLinks(html, locale)
     fs.writeFileSync(outputPath, html)
 
     generated += 1
