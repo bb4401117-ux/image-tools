@@ -177,6 +177,10 @@ function buildHead(page, locale) {
   return [
     `<title>${escapeHtml(title)}</title>`,
     `<meta name="description" content="${escapeHtml(description)}">`,
+    `<meta property="og:title" content="${escapeHtml(title)}">`,
+    `<meta property="og:description" content="${escapeHtml(description)}">`,
+    `<meta name="twitter:title" content="${escapeHtml(title)}">`,
+    `<meta name="twitter:description" content="${escapeHtml(description)}">`,
     `<link rel="canonical" href="${canonical}">`,
     alternates,
     xDefault,
@@ -200,12 +204,19 @@ function buildStaticToolLinks(locale) {
     .join('\n')
 }
 
-function injectStaticLinks(html, locale) {
+function injectStaticLinks(html, locale, page) {
   const links = buildStaticToolLinks(locale)
+  const [title, description] = SEO[page][locale]
 
   return html.replace(
     /<div id="root"><\/div>/i,
-    `<div id="root"><nav aria-label="Image tools">${links}</nav></div>`,
+    `<div id="root">
+      <section class="static-seo-content">
+        <h1>${escapeHtml(title)}</h1>
+        <p>${escapeHtml(description)}</p>
+      </section>
+      <nav aria-label="Image tools">${links}</nav>
+    </div>`,
   )
 }
 
@@ -218,6 +229,10 @@ function injectSeo(html, page, locale) {
       const cleanedHead = existingHead
         .replace(/<title>[\s\S]*?<\/title>/gi, '')
         .replace(/<meta\s+name=["']description["'][^>]*>/gi, '')
+        .replace(/<meta\s+property=["']og:title["'][^>]*>/gi, '')
+        .replace(/<meta\s+property=["']og:description["'][^>]*>/gi, '')
+        .replace(/<meta\s+name=["']twitter:title["'][^>]*>/gi, '')
+        .replace(/<meta\s+name=["']twitter:description["'][^>]*>/gi, '')
         .replace(/<link\s+rel=["']canonical["'][^>]*>/gi, '')
         .replace(/<link\s+rel=["']alternate["'][^>]*>/gi, '')
 
@@ -238,7 +253,7 @@ for (const [page, pagePath] of Object.entries(PAGES)) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true })
 
     let html = injectSeo(template, page, locale)
-    html = injectStaticLinks(html, locale)
+    html = injectStaticLinks(html, locale, page)
     fs.writeFileSync(outputPath, html)
 
     generated += 1
